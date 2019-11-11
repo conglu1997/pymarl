@@ -1,5 +1,5 @@
-FROM nvidia/cuda:9.2-cudnn7-devel-ubuntu16.04
-MAINTAINER Tabish Rashid
+FROM nvidia/cuda:10.1-cudnn7-devel-ubuntu18.04
+MAINTAINER Tabish Rashid, Christian Schroeder de Witt
 
 # CUDA includes
 ENV CUDA_PATH /usr/local/cuda
@@ -15,8 +15,11 @@ RUN apt-get update -y && apt-get install software-properties-common -y && \
 # Install curl and other dependencies
 RUN apt-get update -y && apt-get install -y curl libssl-dev openssl libopenblas-dev \
     libhdf5-dev hdf5-helpers hdf5-tools libhdf5-serial-dev libprotobuf-dev protobuf-compiler git
-RUN curl -sk https://raw.githubusercontent.com/torch/distro/master/install-deps | bash && \
-    rm -rf /var/lib/apt/lists/*
+#RUN curl -sk https://raw.githubusercontent.com/torch/distro/master/install-deps | bash && \
+#    rm -rf /var/lib/apt/lists/*
+
+# Deal with tzdata
+RUN export DEBIAN_FRONTEND=noninteractive && ln -fs /usr/share/zoneinfo/America/New_York /etc/localtime && apt-get install -y tzdata && dpkg-reconfigure --frontend noninteractive tzdata
 
 # Install python3 pip3
 RUN apt-get update
@@ -47,5 +50,9 @@ RUN pip3 install torchvision snakeviz pytest probscale
 ## -- SMAC
 RUN pip3 install git+https://github.com/oxwhirl/smac.git
 ENV SC2PATH /pymarl/3rdparty/StarCraftII
+
+## -- BRAINBALL
+RUN apt-get install -y git cmake build-essential libgl1-mesa-dev libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev libsdl2-gfx-dev libboost-all-dev libdirectfb-dev libst-dev mesa-utils xvfb x11vnc libsdl-sge-dev python3-pip
+RUN git clone https://github.com/google-research/football.git && cd football && git checkout experimental && pip3 install .
 
 WORKDIR /pymarl
