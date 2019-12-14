@@ -20,6 +20,7 @@ Then, clone and install GRF with partial observability wrapper:
 
 git clone https://github.com/schroederdewitt/football
 cd football
+git checkout gfootball
 pip3 install .
 
 Example launch command:
