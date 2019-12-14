@@ -4,10 +4,13 @@
 
 ------------------------------------------------------------
 # PyMARL - Google Research Football edition (Experimental)
-Multi-Agent Football Challenge
-Christian Schroeder de Witt (cs@robots.ox.ac.uk)
+**Multi-Agent Football Challenge**
+
+By Christian Schroeder de Witt (cs@robots.ox.ac.uk), 2019
 
 Based on PyMARL (WhiRL) and Google Research Football
+
+
 Modified to support multi-agent support with partial observability:
 
 - **view cone** (both xy and z angle): player looks into direction of last movement
@@ -19,16 +22,20 @@ To use, please follow general installation instructions below
 using this repository.
 Then, clone and install GRF with partial observability wrapper:
 
+```shell
 git clone https://github.com/schroederdewitt/football
 cd football
 git checkout gfootball
 pip3 install .
+```
 
 Example launch command:
 
+```shell
 python3 src/main.py --config=qmix --env-config=gfootball with
 mixer=vdn env_args.scenario=academy_single_goal_versus_lazy
 env_args.representation=maposimple115
+```
 
 Default Options for partial observability:
 
@@ -41,13 +48,16 @@ Default Options for partial observability:
 
 To use full observability with image input use:
 
+```shell
+python3 src/main.py --config=qmix --env-config=gfootball with
+mixer=vdn env_args.scenario=academy_single_goal_versus_lazy
 agent=rnn_ddpg env_args.representation=pixels
+```
 
 For further algorithmic options, please see below.
 
-Available scenarios:
-see official GRF repository
-https://github.com/google-research/football/blob/master/gfootball/doc/scenarios.md
+## Available scenarios:
+see [official GRF repository](https://github.com/google-research/football/blob/master/gfootball/doc/scenarios.md)
 
 ------------------------------------------------------------
 
