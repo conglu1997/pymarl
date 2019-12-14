@@ -9,10 +9,11 @@ Christian Schroeder de Witt (cs@robots.ox.ac.uk)
 
 Based on PyMARL (WhiRL) and Google Research Football
 Modified to support multi-agent support with partial observability:
-    - view cone (both xy and z angle)
-    - player view occlusion
-    - depth noising (fixed angular resolution)
-    - fixed view radius (off by default)
+
+- **view cone** (both xy and z angle): player looks into direction of last movement
+- player view **occlusion**
+- **depth noise** (fixed angular resolution)
+- fixed **view radius** (off by default)
 
 To use, please follow general installation instructions below
 using this repository.
@@ -30,14 +31,19 @@ mixer=vdn env_args.scenario=academy_single_goal_versus_lazy
 env_args.representation=maposimple115
 
 Default Options for partial observability:
-    env_args.po_view_cone_xy_opening=160  # [0, 360], in degrees
-    po_view_cone_z_opening=70  # in degrees  # [0, 90], in degrees
-    po_player_width=0.060  # 1 unit ~= 180 feet, for occlusion calculations
-    po_player_height=0.033  # 1 unit ~= 180 feet, for occlusion calculations
-    po_player_view_radius=-1  # -1=unlimited view radius, otherwise 1 unit ~=180 feet
-    po_depth_noise='default'  # corresponds to visual angular resolution of 0.2 degrees, uses Gaussian noise
 
-For algorithmic options, please see below.
+- env_args.po_view_cone_xy_opening=160  # [0, 360], in degrees
+- env_args.po_view_cone_z_opening=70  # in degrees  # [0, 90], in degrees
+- env_args.po_player_width=0.060  # 1 unit ~= 180 feet, for occlusion calculations
+- env_args.po_player_height=0.033  # 1 unit ~= 180 feet, for occlusion calculations
+- env_args.po_player_view_radius=-1  # -1=unlimited view radius, otherwise 1 unit ~=180 feet
+- env_args.po_depth_noise='default'  # corresponds to visual angular resolution of 0.2 degrees, uses Gaussian noise
+
+To use full observability with image input use:
+
+agent=rnn_ddpg env_args.representation=pixels
+
+For further algorithmic options, please see below.
 
 Available scenarios:
 see official GRF repository
