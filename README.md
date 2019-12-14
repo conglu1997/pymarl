@@ -34,7 +34,7 @@ Example launch command:
 ```shell
 python3 src/main.py --config=qmix --env-config=gfootball with
 mixer=vdn env_args.scenario=academy_single_goal_versus_lazy
-env_args.representation=maposimple115
+env_args.representation=ma_po_list
 ```
 
 Default Options for partial observability:
