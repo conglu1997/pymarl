@@ -3,9 +3,9 @@ env: gfootball
 env_args:
   scenario: 11_vs_11_stochastic
   game_visibility: full
-  episode_limit: -1
+  episode_limit: 400
   observation_reference_frame: fixed
-  representation: "simple115"
+  representation: "ma_po_list"
 
 test_nepisode: 32
 test_interval: 10000
@@ -14,4 +14,3 @@ runner_log_interval: 2000
 learner_log_interval: 2000
 t_max: 2000000
 buffer_cpu_only: True
-

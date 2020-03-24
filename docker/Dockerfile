@@ -1,3 +1,4 @@
+# Modifications for gfootball (Cong)
 FROM nvidia/cuda:9.2-cudnn7-devel-ubuntu16.04
 MAINTAINER Tabish Rashid
 
@@ -17,6 +18,13 @@ RUN apt-get update -y && apt-get install -y curl libssl-dev openssl libopenblas-
     libhdf5-dev hdf5-helpers hdf5-tools libhdf5-serial-dev libprotobuf-dev protobuf-compiler git
 RUN curl -sk https://raw.githubusercontent.com/torch/distro/master/install-deps | bash && \
     rm -rf /var/lib/apt/lists/*
+
+# Dependencies for gfootball (from google dockerfile)
+RUN apt-get update && apt-get install -yq git cmake build-essential \
+  libgl1-mesa-dev libsdl2-dev \
+  libsdl2-image-dev libsdl2-ttf-dev libsdl2-gfx-dev libboost-all-dev \
+  libdirectfb-dev libst-dev mesa-utils xvfb x11vnc \
+  libsdl-sge-dev python3-pip
 
 # Install python3 pip3
 RUN apt-get update
@@ -47,5 +55,11 @@ RUN pip3 install torchvision snakeviz pytest probscale
 ## -- SMAC
 RUN pip3 install git+https://github.com/oxwhirl/smac.git
 ENV SC2PATH /pymarl/3rdparty/StarCraftII
+
+## -- gfootball
+RUN pip3 install tensorflow==1.15rc2 dm-sonnet psutil
+RUN pip3 install git+https://github.com/openai/baselines.git@master
+
+RUN git clone https://github.com/conglu1997/football.git /football && cd /football && python3 setup.py install
 
 WORKDIR /pymarl
