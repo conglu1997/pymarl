@@ -10,7 +10,7 @@ def extend_param_dicts(param_dicts, shared_params, exp_params, repeats=1):
         param_dicts.append(copy.deepcopy(result))
     return param_dicts
 
-server_list = [("gimli", [0,6,7], 6)]
+server_list = [("gimli", [1], 6)]
 
 label = "gfootball_iql"
 config = "iql"
@@ -24,6 +24,7 @@ shared_params = {
     "t_max": 2000000,
     "epsilon_anneal_time": 250000,
     "buffer_size": 5000,
+    "env_args.episode_limit": 400,
 }
 
 
@@ -36,4 +37,4 @@ for map_name in ["academy_pass_and_shoot_with_keeper",
             "name": "iql__{}".format(map_name),
             "env_args.map_name": map_name
         },
-        repeats=4)
+        repeats=1)

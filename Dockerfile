@@ -1,6 +1,6 @@
-# Modifications for gfootball (Cong)
+# Modifications for gfootball
 FROM nvidia/cuda:9.2-cudnn7-devel-ubuntu16.04
-MAINTAINER Tabish Rashid
+MAINTAINER Cong Lu
 
 # CUDA includes
 ENV CUDA_PATH /usr/local/cuda

@@ -3,7 +3,7 @@ env: gfootball
 env_args:
   scenario: 11_vs_11_stochastic
   game_visibility: full
-  episode_limit: 400
+  episode_limit: 3000
   observation_reference_frame: fixed
   representation: "ma_po_list"
 
