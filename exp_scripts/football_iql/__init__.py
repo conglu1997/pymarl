@@ -35,6 +35,6 @@ for map_name in ["academy_pass_and_shoot_with_keeper",
     extend_param_dicts(param_dicts, shared_params,
         {
             "name": "iql__{}".format(map_name),
-            "env_args.map_name": map_name
+            "env_args.scenario": map_name
         },
         repeats=1)
