@@ -48,7 +48,7 @@ class FootballEnv(object):
             self.n_agents = args.n_agents
 
         self.episode_limit = args.episode_limit if getattr(args, "episode_limit",
-                                                           -1) != -1 else 25  # TODO: Look up correct episode length!
+                                                           -1) != -1 else 400  # TODO: Look up correct episode length!
         self.observation_reference_frame = getattr(args, "observation_reference_frame", "fixed")
 
         self.reset()
