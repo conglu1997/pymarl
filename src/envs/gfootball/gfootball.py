@@ -12,10 +12,9 @@ import sys
 
 import gfootball.env as football_env
 
+
 class FootballEnv(object):
-
     def __init__(self, **kwargs):
-
         args = kwargs
         if isinstance(args, dict):
             args = convert(args)
@@ -28,14 +27,14 @@ class FootballEnv(object):
         self.render_game = getattr(args, "render", self.representation in ["pixels", "pixels_gray"])
 
         # Secondary config
-        scenario_config = {"11_vs_11_stochastic": {"n_agents":11},
-                           "academy_empty_goal_close": {"n_agents":1},
-                           "academy_empty_goal": {"n_agents":1},
+        scenario_config = {"11_vs_11_stochastic": {"n_agents": 11},
+                           "academy_empty_goal_close": {"n_agents": 1},
+                           "academy_empty_goal": {"n_agents": 1},
                            "academy_run_to_score": {"n_agents": 1},
                            "academy_run_to_score_with_keeper": {"n_agents": 1},
                            "academy_pass_and_shoot_with_keeper": {"n_agents": 2},
                            "academy_run_pass_and_shoot_with_keeper": {"n_agents": 2},
-                           "academy_3_vs_1_with_keeper": {"n_agents":3},
+                           "academy_3_vs_1_with_keeper": {"n_agents": 3},
                            "academy_corner": {"n_agents": 1},
                            "academy_counterattack_easy": {"n_agents": 4},
                            "academy_single_goal_versus_lazy": {"n_agents": 11}
@@ -44,14 +43,15 @@ class FootballEnv(object):
             self.n_agents = scenario_config[self.scenario]["n_agents"]
         else:
             assert args.n_agents <= scenario_config[self.scenario]["n_agents"], \
-                "Scenario only supports up to {} agents - you supplied {}!".format(scenario_config[self.scenario]["n_agents"], args.n_agents)
+                "Scenario only supports up to {} agents - you supplied {}!".format(
+                    scenario_config[self.scenario]["n_agents"], args.n_agents)
             self.n_agents = args.n_agents
 
-        self.episode_limit = args.episode_limit if getattr(args, "episode_limit", -1) != -1 else 25  # TODO: Look up correct episode length!
+        self.episode_limit = args.episode_limit if getattr(args, "episode_limit",
+                                                           -1) != -1 else 25  # TODO: Look up correct episode length!
         self.observation_reference_frame = getattr(args, "observation_reference_frame", "fixed")
 
         self.reset()
-        pass
 
     def _make_ma_obs(self, obs, env):
         """
@@ -88,7 +88,7 @@ class FootballEnv(object):
             self.done = done
             self.observations = self._make_ma_obs(state, self.env)
             self.state = self._make_state(state, self.env)
-            self.steps +=1
+            self.steps += 1
             if self.episode_limit != -1 and self.steps == self.episode_limit:
                 self.done = True
             return reward if isinstance(reward, np.float32) else reward[0], done, info
@@ -134,11 +134,10 @@ class FootballEnv(object):
         return {}
 
     def reset(self):
-
         self.env = football_env.create_environment(
-            env_name = self.scenario,
-            render = self.render_game,
-            number_of_left_players_agent_controls = self.n_agents,
+            env_name=self.scenario,
+            render=self.render_game,
+            number_of_left_players_agent_controls=self.n_agents,
             representation=self.representation)
         states = self.env.reset()
         state = states if len(states.shape) == 1 else states[0]
@@ -151,10 +150,10 @@ class FootballEnv(object):
         return
 
     def render(self):
-        raise NotImplementedError
+        return self.env.render()
 
     def close(self):
-        raise NotImplementedError
+        self.env.close()
 
     def seed(self):
         raise NotImplementedError
