@@ -110,7 +110,6 @@ def config_copy(config):
 
 
 if __name__ == '__main__':
-    global mongo_client
     params = deepcopy(sys.argv)
 
     # Get the defaults from default.yaml

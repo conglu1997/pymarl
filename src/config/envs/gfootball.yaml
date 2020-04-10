@@ -7,6 +7,7 @@ env_args:
   observation_reference_frame: fixed
   representation: "ma_po_list"
   full_obs: False
+  view_angle: 160
 
 test_nepisode: 32
 test_interval: 10000

@@ -12,7 +12,7 @@ def extend_param_dicts(param_dicts, shared_params, exp_params, repeats=1):
     return param_dicts
 
 
-server_list = [("gimli", [2], 6)]
+server_list = [("gimli", [0, 1, 2, 3], 2)]
 
 label = "gfootball_iql_full_obs"
 config = "iql"
@@ -30,7 +30,11 @@ shared_params = {
     "env_args.full_obs": True,
 }
 
-for map_name in ["academy_pass_and_shoot_with_keeper",
+for map_name in ["academy_empty_goal",
+                 "academy_empty_goal_close",
+                 "academy_run_to_score",
+                 "academy_run_to_score_with_keeper",
+                 "academy_pass_and_shoot_with_keeper",
                  "academy_run_pass_and_shoot_with_keeper",
                  "academy_3_vs_1_with_keeper",
                  "academy_counterattack_easy"]:
