@@ -6,6 +6,7 @@ env_args:
   episode_limit: 3000
   observation_reference_frame: fixed
   representation: "ma_po_list"
+  full_obs: False
 
 test_nepisode: 32
 test_interval: 10000

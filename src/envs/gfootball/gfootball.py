@@ -23,8 +23,9 @@ class FootballEnv(object):
         self.scenario = getattr(args, "scenario", "11_vs_11_stochastic")
         self.game_visibility = getattr(args, "game_visibility", "full")
         self.n_actions = 20  # hard-coded
-        self.representation = getattr(args, "representation", "simple115")
+        self.representation = getattr(args, "representation", "ma_po_list")
         self.render_game = getattr(args, "render", self.representation in ["pixels", "pixels_gray"])
+        self.full_obs_flag = getattr(args, "full_obs", False)
 
         # Secondary config
         scenario_config = {"11_vs_11_stochastic": {"n_agents": 11},
@@ -138,7 +139,8 @@ class FootballEnv(object):
             env_name=self.scenario,
             render=self.render_game,
             number_of_left_players_agent_controls=self.n_agents,
-            representation=self.representation)
+            representation=self.representation,
+            full_obs_flag=self.full_obs_flag)
         states = self.env.reset()
         state = states if len(states.shape) == 1 else states[0]
         self.observations = self._make_ma_obs(state, self.env)
