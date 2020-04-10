@@ -16,8 +16,7 @@ from components.episode_buffer import ReplayBuffer
 from components.transforms import OneHot
 
 
-def run(_run, _config, _log):
-
+def run(_run, _config, _log, pymongo_client):
     # check args sanity
     _config = args_sanity_check(_config, _log)
 
@@ -50,6 +49,11 @@ def run(_run, _config, _log):
     # Clean up after finishing
     print("Exiting Main")
 
+    if pymongo_client is not None:
+        print("Attempting to close mongodb client")
+        pymongo_client.close()
+        print("Mongodb client closed")
+
     print("Stopping all threads")
     for t in threading.enumerate():
         if t.name != "MainThread":
@@ -64,7 +68,6 @@ def run(_run, _config, _log):
 
 
 def evaluate_sequential(args, runner):
-
     for _ in range(args.test_nepisode):
         runner.run(test_mode=True)
 
@@ -73,8 +76,8 @@ def evaluate_sequential(args, runner):
 
     runner.close_env()
 
-def run_sequential(args, logger):
 
+def run_sequential(args, logger):
     # Init runner so we can get env info
     runner = r_REGISTRY[args.runner](args=args, logger=logger)
 
@@ -194,7 +197,7 @@ def run_sequential(args, logger):
         if args.save_model and (runner.t_env - model_save_time >= args.save_model_interval or model_save_time == 0):
             model_save_time = runner.t_env
             save_path = os.path.join(args.local_results_path, "models", args.unique_token, str(runner.t_env))
-            #"results/models/{}".format(unique_token)
+            # "results/models/{}".format(unique_token)
             os.makedirs(save_path, exist_ok=True)
             logger.console_logger.info("Saving models to {}".format(save_path))
 
@@ -214,7 +217,6 @@ def run_sequential(args, logger):
 
 
 def args_sanity_check(config, _log):
-
     # set CUDA flags
     # config["use_cuda"] = True # Use cuda whenever possible!
     if config["use_cuda"] and not th.cuda.is_available():
@@ -224,6 +226,6 @@ def args_sanity_check(config, _log):
     if config["test_nepisode"] < config["batch_size_run"]:
         config["test_nepisode"] = config["batch_size_run"]
     else:
-        config["test_nepisode"] = (config["test_nepisode"]//config["batch_size_run"]) * config["batch_size_run"]
+        config["test_nepisode"] = (config["test_nepisode"] // config["batch_size_run"]) * config["batch_size_run"]
 
     return config

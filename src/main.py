@@ -5,6 +5,7 @@ from os.path import dirname, abspath
 from copy import deepcopy
 from sacred import Experiment, SETTINGS
 from sacred.observers import FileStorageObserver
+from sacred.observers import MongoObserver
 from sacred.utils import apply_backspaces_and_linefeeds
 import sys
 import torch as th
@@ -37,44 +38,39 @@ def setup_mongodb(results_path):
     db_name = r'pymarl'
 
     client = None
-    mongodb_fail = False
-    if True:
-        # First try to connect to the central server. If that doesn't work then just save locally
-        maxSevSelDelay = 10000  # Assume 1ms maximum server selection delay
-        try:
-            # Check whether server is accessible
-            logger.info("Trying to connect to mongoDB '{}'".format(db_url))
-            client = pymongo.MongoClient(db_url, ssl=True, serverSelectionTimeoutMS=maxSevSelDelay)
-            client.server_info()
-            # If this hasn't raised an exception, we can add the observer
-            ex.observers.append(MongoObserver.create(url=db_url, db_name=db_name, ssl=True))  # db_name=db_name,
-            logger.info("Added MongoDB observer on {}.".format(db_url))
-        except pymongo.errors.ServerSelectionTimeoutError:
-            logger.warning("Couldn't connect to MongoDB.")
-            logger.info("Fallback to FileStorageObserver in results/sacred.")
-            mongodb_fail = True
 
-    if mongodb_fail:
-        file_obs_path = os.path.join(results_path, "sacred")
-        logger.info("Using the FileStorageObserver in results/sacred")
-        ex.observers.append(FileStorageObserver.create(file_obs_path))
+    # First try to connect to the central server. If that doesn't work then just save locally
+    maxSevSelDelay = 10000  # Assume 1ms maximum server selection delay
+    try:
+        # Check whether server is accessible
+        logger.info("Trying to connect to mongoDB '{}'".format(db_url))
+        client = pymongo.MongoClient(db_url, ssl=True, serverSelectionTimeoutMS=maxSevSelDelay)
+        client.server_info()
+        # If this hasn't raised an exception, we can add the observer
+        ex.observers.append(MongoObserver.create(url=db_url, db_name=db_name, ssl=True))  # db_name=db_name,
+        logger.info("Added MongoDB observer on {}.".format(db_url))
+    except pymongo.errors.ServerSelectionTimeoutError:
+        logger.warning("Couldn't connect to MongoDB.")
+        logger.info("Fallback to FileStorageObserver in results/sacred.")
+
     return client
 
 
 @ex.main
-def my_main(_run, _config, _log, env_args):
+def my_main(_run, _config, _log):
     global mongo_client
 
     # Setting the random seed throughout the modules
+    config = config_copy(_config)
     np.random.seed(_config["seed"])
     th.manual_seed(_config["seed"])
-    env_args['seed'] = _config["seed"]
+    config['env_args']['seed'] = config["seed"]
 
     # run the framework
     run(_run, _config, _log, mongo_client)
 
     # force exit
-    os._exit()
+    os._exit(0)
 
 
 def _get_config(params, arg_name, subfolder):
@@ -134,10 +130,11 @@ if __name__ == '__main__':
     # now add all the config to sacred
     ex.add_config(config_dict)
 
-    # Save to disk by default for sacred
+    mongo_client = setup_mongodb(results_path)
+
+    # Save to disk by default for sacred, even if we are using the mongodb
     logger.info("Saving to FileStorageObserver in results/sacred.")
     file_obs_path = os.path.join(results_path, "sacred")
     ex.observers.append(FileStorageObserver.create(file_obs_path))
 
-    mongo_client = setup_mongodb(results_path)
     ex.run_commandline(params)

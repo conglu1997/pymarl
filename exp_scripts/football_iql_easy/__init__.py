@@ -29,10 +29,10 @@ shared_params = {
     "env_args.episode_limit": 1000,
 }
 
-for map_name in ["academy_pass_and_shoot_with_keeper",
-                 "academy_run_pass_and_shoot_with_keeper",
-                 "academy_3_vs_1_with_keeper",
-                 "academy_counterattack_easy"]:
+for map_name in ["academy_empty_goal",
+                 "academy_empty_goal_close",
+                 "academy_run_to_score",
+                 "academy_run_to_score_with_keeper"]:
     extend_param_dicts(param_dicts, shared_params,
                        {
                            "name": "iql__{}".format(map_name),
