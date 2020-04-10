@@ -10,10 +10,11 @@ import sys
 import torch as th
 from utils.logging import get_logger
 import yaml
+import pymongo
 
 from run import run
 
-SETTINGS['CAPTURE_MODE'] = "fd" # set to "no" if you want to see stdout/stderr in console
+SETTINGS['CAPTURE_MODE'] = "fd"  # set to "no" if you want to see stdout/stderr in console
 logger = get_logger()
 
 ex = Experiment("pymarl")
@@ -22,17 +23,58 @@ ex.captured_out_filter = apply_backspaces_and_linefeeds
 
 results_path = os.path.join(dirname(dirname(abspath(__file__))), "results")
 
+mongo_client = None
+
+
+def setup_mongodb(results_path):
+    # The central mongodb for our deepmarl experiments
+    # You need to set up local port forwarding to ensure this local port maps to the server
+    # if conf_str == "":
+    # db_host = "localhost"
+    # db_port = 27027 # Use a different port from the default mongodb port to avoid a potential clash
+
+    db_url = r'mongodb://pymarlOwner:EMC7Jp98c8rE7FxxN7g82DT5spGsVr9A@gandalf.cs.ox.ac.uk:27017/pymarl'
+    db_name = r'pymarl'
+
+    client = None
+    mongodb_fail = False
+    if True:
+        # First try to connect to the central server. If that doesn't work then just save locally
+        maxSevSelDelay = 10000  # Assume 1ms maximum server selection delay
+        try:
+            # Check whether server is accessible
+            logger.info("Trying to connect to mongoDB '{}'".format(db_url))
+            client = pymongo.MongoClient(db_url, ssl=True, serverSelectionTimeoutMS=maxSevSelDelay)
+            client.server_info()
+            # If this hasn't raised an exception, we can add the observer
+            ex.observers.append(MongoObserver.create(url=db_url, db_name=db_name, ssl=True))  # db_name=db_name,
+            logger.info("Added MongoDB observer on {}.".format(db_url))
+        except pymongo.errors.ServerSelectionTimeoutError:
+            logger.warning("Couldn't connect to MongoDB.")
+            logger.info("Fallback to FileStorageObserver in results/sacred.")
+            mongodb_fail = True
+
+    if mongodb_fail:
+        file_obs_path = os.path.join(results_path, "sacred")
+        logger.info("Using the FileStorageObserver in results/sacred")
+        ex.observers.append(FileStorageObserver.create(file_obs_path))
+    return client
+
 
 @ex.main
-def my_main(_run, _config, _log):
+def my_main(_run, _config, _log, env_args):
+    global mongo_client
+
     # Setting the random seed throughout the modules
-    config = config_copy(_config)
-    np.random.seed(config["seed"])
-    th.manual_seed(config["seed"])
-    config['env_args']['seed'] = config["seed"]
+    np.random.seed(_config["seed"])
+    th.manual_seed(_config["seed"])
+    env_args['seed'] = _config["seed"]
 
     # run the framework
-    run(_run, config, _log)
+    run(_run, _config, _log, mongo_client)
+
+    # force exit
+    os._exit()
 
 
 def _get_config(params, arg_name, subfolder):
@@ -44,7 +86,8 @@ def _get_config(params, arg_name, subfolder):
             break
 
     if config_name is not None:
-        with open(os.path.join(os.path.dirname(__file__), "config", subfolder, "{}.yaml".format(config_name)), "r") as f:
+        with open(os.path.join(os.path.dirname(__file__), "config", subfolder, "{}.yaml".format(config_name)),
+                  "r") as f:
             try:
                 config_dict = yaml.load(f)
             except yaml.YAMLError as exc:
@@ -71,6 +114,7 @@ def config_copy(config):
 
 
 if __name__ == '__main__':
+    global mongo_client
     params = deepcopy(sys.argv)
 
     # Get the defaults from default.yaml
@@ -95,5 +139,5 @@ if __name__ == '__main__':
     file_obs_path = os.path.join(results_path, "sacred")
     ex.observers.append(FileStorageObserver.create(file_obs_path))
 
+    mongo_client = setup_mongodb(results_path)
     ex.run_commandline(params)
-

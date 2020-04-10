@@ -42,7 +42,18 @@ RUN mkdir /install
 WORKDIR /install
 
 RUN pip3 install jsonpickle==0.9.6
-# install Sacred (from OxWhirl fork)
+
+### -------------------------------------------------------------------
+#### install MongoDB (for Sacred)
+#### -------------------------------------------------------------------
+
+# Install pymongo
+RUN pip3 install pymongo
+
+#### -------------------------------------------------------------------
+#### install Sacred (from OxWhirl fork)
+#### -------------------------------------------------------------------
+
 RUN pip3 install setuptools
 RUN git clone https://github.com/oxwhirl/sacred.git /install/sacred && cd /install/sacred && python3 setup.py install
 
