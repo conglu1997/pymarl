@@ -22,7 +22,7 @@ class FootballEnv(object):
         # Primary config
         self.scenario = getattr(args, "scenario", "11_vs_11_stochastic")
         self.game_visibility = getattr(args, "game_visibility", "full")
-        self.n_actions = 20  # hard-coded
+        self.n_actions = 19  # hard-coded
         self.representation = getattr(args, "representation", "ma_po_list")
         self.render_game = getattr(args, "render", self.representation in ["pixels", "pixels_gray"])
         self.full_obs_flag = getattr(args, "full_obs", False)
@@ -84,6 +84,11 @@ class FootballEnv(object):
     def step(self, actions):
         """ Returns reward, terminated, info """
         if not self.done:
+            # Convert pytorch tensor to list (expand if single action)
+            actions = actions.tolist()
+            if len(actions) == 1:
+                actions = actions[0]
+
             states, reward, done, info = self.env.step(actions)
             self.done = done
 
