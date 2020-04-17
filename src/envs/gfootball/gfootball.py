@@ -55,7 +55,7 @@ class FootballEnv(object):
 
         self.reset()
 
-    def _make_ma_obs(self, obs, env):
+    def _make_ma_obs(self, obs):
         """
         Convert observation from gfootball_env into a multi-agent observation.
         :param obs:
@@ -70,7 +70,7 @@ class FootballEnv(object):
             raise NotImplementedError
         return observations
 
-    def _make_state(self, state, env):
+    def _make_state(self, state):
         """
         Convert observation from gfootball_env into a multi-agent observation.
         :param obs:
@@ -84,12 +84,22 @@ class FootballEnv(object):
     def step(self, actions):
         """ Returns reward, terminated, info """
         if not self.done:
-            action = self.env.action_space.sample()
-            states, reward, done, info = self.env.step(action)
-            state = states if len(states.shape) == 1 else states[0]
+            states, reward, done, info = self.env.step(actions)
             self.done = done
-            self.observations = self._make_ma_obs(state, self.env)
-            self.state = self._make_state(state, self.env)
+
+            if len(states.shape) == 1:
+                # Single observation
+                state = states
+                # This just duplicates states
+                self.observations = self._make_ma_obs(state)
+                self.state = self._make_state(state)
+            else:
+                # Many observations
+                state = states[0]
+                # TODO: do the moveaxis conversion on this later
+                self.observations = states
+                self.state = self._make_state(state)
+
             self.steps += 1
             if self.episode_limit != -1 and self.steps == self.episode_limit:
                 self.done = True
@@ -141,13 +151,25 @@ class FootballEnv(object):
             render=self.render_game,
             number_of_left_players_agent_controls=self.n_agents,
             representation=self.representation,
+            po_view_cone_xy_opening=self.view_angle,
             full_obs_flag=self.full_obs_flag,
-            po_view_cone_xy_opening=self.view_angle)
+            )
         states = self.env.reset()
-        state = states if len(states.shape) == 1 else states[0]
-        self.observations = self._make_ma_obs(state, self.env)
+
+        if len(states.shape) == 1:
+            # Single observation
+            state = states
+            # This just duplicates states
+            self.observations = self._make_ma_obs(state)
+            self.state = self._make_state(state)
+        else:
+            # Many observations
+            state = states[0]
+            # TODO: do the moveaxis conversion on this later
+            self.observations = states
+            self.state = self._make_state(state)
+
         self.obs_size = self.observations[0].shape
-        self.state = self._make_state(state, self.env)
         self.state_size = self.state.shape
         self.done = False
         self.steps = 1
