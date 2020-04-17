@@ -151,8 +151,8 @@ class FootballEnv(object):
             render=self.render_game,
             number_of_left_players_agent_controls=self.n_agents,
             representation=self.representation,
-            po_view_cone_xy_opening=self.view_angle,
-            full_obs_flag=self.full_obs_flag,
+            # po_view_cone_xy_opening=self.view_angle,
+            # full_obs_flag=self.full_obs_flag,
             )
         states = self.env.reset()
 

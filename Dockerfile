@@ -71,6 +71,8 @@ ENV SC2PATH /pymarl/3rdparty/StarCraftII
 RUN pip3 install tensorflow==1.15rc2 dm-sonnet psutil
 RUN pip3 install git+https://github.com/openai/baselines.git@master
 
-RUN git clone https://github.com/conglu1997/football.git /football && cd /football && python3 setup.py install
+## RUN git clone https://github.com/conglu1997/football.git /football && cd /football && python3 setup.py install
+RUN git clone https://github.com/google-research/football.git /football && cd /football && python3 setup.py install
+
 
 WORKDIR /pymarl
