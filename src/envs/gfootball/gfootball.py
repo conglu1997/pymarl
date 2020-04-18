@@ -53,7 +53,19 @@ class FootballEnv(object):
                                                            -1) != -1 else 400  # TODO: Look up correct episode length!
         self.observation_reference_frame = getattr(args, "observation_reference_frame", "fixed")
 
+        self.env = football_env.create_environment(
+            env_name=self.scenario,
+            render=self.render_game,
+            number_of_left_players_agent_controls=self.n_agents,
+            representation=self.representation,
+            # po_view_cone_xy_opening=self.view_angle,
+            # full_obs_flag=self.full_obs_flag,
+        )
+        print(self.env.action_space)
+
         self.reset()
+
+        self.obs_size = self.observations[0].shape
 
     def _make_ma_obs(self, obs):
         """
@@ -85,7 +97,8 @@ class FootballEnv(object):
         """ Returns reward, terminated, info """
         if not self.done:
             # Convert pytorch tensor to list (expand if single action)
-            actions = actions.tolist()
+            # actions = actions.tolist()
+            actions = (actions.data).cpu().numpy()
             if len(actions) == 1:
                 actions = actions[0]
 
@@ -94,16 +107,12 @@ class FootballEnv(object):
 
             if len(states.shape) == 1:
                 # Single observation
-                state = states
                 # This just duplicates states
-                self.observations = self._make_ma_obs(state)
-                self.state = self._make_state(state)
+                self.observations = self._make_ma_obs(states)
             else:
                 # Many observations
-                state = states[0]
-                # TODO: do the moveaxis conversion on this later
+                # TODO: do the moveaxis conversion on this later (states is an ndarray)
                 self.observations = states
-                self.state = self._make_state(state)
 
             self.steps += 1
             if self.episode_limit != -1 and self.steps == self.episode_limit:
@@ -125,17 +134,26 @@ class FootballEnv(object):
         return self.obs_size
 
     def get_state(self):
-        return self.state
+        # Observation concat
+        return np.concatenate(self.get_obs(), axis=0).astype(
+            np.float32
+        )
 
     def get_state_size(self):
         """ Returns the shape of the state"""
-        return self.state_size
+        return self.get_obs_size() * self.n_agents
 
     def get_avail_actions(self):
-        return [np.ones((self.n_actions,)) for _ in range(self.n_agents)]
+        """Returns the available actions of all agents in a list."""
+        avail_actions = []
+        for agent_id in range(self.n_agents):
+            avail_agent = self.get_avail_agent_actions(agent_id)
+            avail_actions.append(avail_agent)
+        return avail_actions
 
     def get_avail_agent_actions(self, agent_id):
         """ Returns the available actions for agent_id """
+        # Mask for the actions
         return np.ones((self.n_actions,))
 
     def get_total_actions(self):
@@ -151,31 +169,17 @@ class FootballEnv(object):
         return {}
 
     def reset(self):
-        self.env = football_env.create_environment(
-            env_name=self.scenario,
-            render=self.render_game,
-            number_of_left_players_agent_controls=self.n_agents,
-            representation=self.representation,
-            # po_view_cone_xy_opening=self.view_angle,
-            # full_obs_flag=self.full_obs_flag,
-            )
         states = self.env.reset()
 
         if len(states.shape) == 1:
             # Single observation
-            state = states
             # This just duplicates states
-            self.observations = self._make_ma_obs(state)
-            self.state = self._make_state(state)
+            self.observations = self._make_ma_obs(states)
         else:
             # Many observations
-            state = states[0]
             # TODO: do the moveaxis conversion on this later
             self.observations = states
-            self.state = self._make_state(state)
 
-        self.obs_size = self.observations[0].shape
-        self.state_size = self.state.shape
         self.done = False
         self.steps = 1
         return
