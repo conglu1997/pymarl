@@ -61,11 +61,14 @@ class FootballEnv(object):
             # po_view_cone_xy_opening=self.view_angle,
             # full_obs_flag=self.full_obs_flag,
         )
-        print(self.env.action_space)
 
         self.reset()
 
         self.obs_size = self.observations[0].shape
+
+        self.state_size = np.concatenate(self.get_obs(), axis=0).astype(
+            np.float32
+        ).shape
 
     def _make_ma_obs(self, obs):
         """
@@ -141,7 +144,7 @@ class FootballEnv(object):
 
     def get_state_size(self):
         """ Returns the shape of the state"""
-        return self.get_obs_size() * self.n_agents
+        return self.state_size
 
     def get_avail_actions(self):
         """Returns the available actions of all agents in a list."""
