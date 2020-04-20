@@ -23,10 +23,11 @@ class FootballEnv(object):
         self.scenario = getattr(args, "scenario", "11_vs_11_stochastic")
         self.game_visibility = getattr(args, "game_visibility", "full")
         self.n_actions = 19  # hard-coded
-        self.representation = getattr(args, "representation", "ma_po_list")
+        self.representation = getattr(args, "representation", "simple115")
         self.render_game = getattr(args, "render", self.representation in ["pixels", "pixels_gray"])
         self.full_obs_flag = getattr(args, "full_obs", False)
         self.view_angle = getattr(args, "view_angle", 160)
+        self.rewards = getattr(args, "rewards", "scoring")
 
         # Secondary config
         scenario_config = {"11_vs_11_stochastic": {"n_agents": 11},
@@ -58,6 +59,7 @@ class FootballEnv(object):
             render=self.render_game,
             number_of_left_players_agent_controls=self.n_agents,
             representation=self.representation,
+            rewards=self.rewards,
             # po_view_cone_xy_opening=self.view_angle,
             # full_obs_flag=self.full_obs_flag,
         )
