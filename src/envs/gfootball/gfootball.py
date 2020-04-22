@@ -24,7 +24,6 @@ class FootballEnv(object):
         self.game_visibility = getattr(args, "game_visibility", "full")
         self.n_actions = 19  # hard-coded
         self.representation = getattr(args, "representation", "simple115")
-        self.render_game = getattr(args, "render", False)
         self.full_obs_flag = getattr(args, "full_obs", False)
         self.view_angle = getattr(args, "view_angle", 160)
         self.rewards = getattr(args, "rewards", "scoring")
@@ -57,12 +56,12 @@ class FootballEnv(object):
             self.n_agents = args.n_agents
 
         self.episode_limit = args.episode_limit if getattr(args, "episode_limit",
-                                                           -1) != -1 else 400  # TODO: Look up correct episode length!
+                                                           -1) != -1 else 1000  # TODO: Look up correct episode length!
         self.observation_reference_frame = getattr(args, "observation_reference_frame", "fixed")
 
         self.env = football_env.create_environment(
             env_name=self.scenario,
-            render=self.render_game,
+            render=False,
             number_of_left_players_agent_controls=self.n_agents,
             representation=self.representation,
             rewards=self.rewards,

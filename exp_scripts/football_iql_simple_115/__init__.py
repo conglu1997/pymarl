@@ -39,7 +39,6 @@ shared_params = {
     "env_args.write_video": False,
     "env_args.dump_frequency": 200,  # Every 200 episodes
     "env_args.logdir": "/data/gimli/conlu/episode_dumps",  # Change server name here
-    "env_args.render": False
 }
 
 for map_name in ["academy_empty_goal",
