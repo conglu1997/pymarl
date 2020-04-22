@@ -28,7 +28,6 @@ shared_params = {
     "buffer_size": 5000,
     "env_args.episode_limit": 1000,
     "env_args.representation": "simple115",
-    "agent": "ff",
     "obs_last_action": False,
     "runner": "parallel",
     "batch_size_run": 8,
@@ -36,10 +35,10 @@ shared_params = {
     "save_model_interval": 250 * 1000,
     "rnn_hidden_dim": 128,
     "local_results_path": "/data/gimli/conlu/results",  # Change server name here
-    "write_full_episode_dumps": True,
-    "write_video": False,
-    "dump_frequency": 200,  # Every 200 episodes
-    "logdir": "/data/gimli/conlu/episode_dumps",  # Change server name here
+    "env_args.write_full_episode_dumps": True,
+    "env_args.write_video": False,
+    "env_args.dump_frequency": 200,  # Every 200 episodes
+    "env_args.logdir": "/data/gimli/conlu/episode_dumps",  # Change server name here
 }
 
 for map_name in ["academy_empty_goal",
