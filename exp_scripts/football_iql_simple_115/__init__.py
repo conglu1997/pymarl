@@ -37,7 +37,7 @@ shared_params = {
     "local_results_path": "/data/gimli/conlu/results",  # Change server name here
     "env_args.write_full_episode_dumps": True,
     "env_args.write_video": False,
-    "env_args.dump_frequency": 200,  # Every 200 episodes
+    "env_args.dump_frequency": 1,  # Every # episodes
     "env_args.logdir": "/data/gimli/conlu/episode_dumps",  # Change server name here
 }
 
