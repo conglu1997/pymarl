@@ -51,11 +51,13 @@ for map_name in ["academy_empty_goal",
                  "academy_counterattack_easy"]:
     for rewards in ["scoring,checkpoints", "scoring"]:
         for agent in ['ff', 'rnn']:
+            name = "iql__{0}__{1}__{2}".format(map_name, rewards, agent)
             extend_param_dicts(param_dicts, shared_params,
                                {
-                                   "name": "iql__{0}__{1}__{2}".format(map_name, rewards, agent),
+                                   "name": name,
                                    "env_args.scenario": map_name,
                                    "env_args.rewards": rewards,
+                                   "env_args.logdir": "/data/gimli/conlu/episode_dumps/{0}".format(name),  # Change server name here
                                    "agent": agent,
                                },
                                repeats=1)
