@@ -16,5 +16,7 @@ NV_GPU="$GPU" ${cmd} run \
     --name $name \
     --user $(id -u):$(id -g) \
     -v `pwd`:/pymarl \
+    -v /data:/data \
+    -e STORAGE_HOSTNAME=`hostname -s` \
     -t pymarl:1.0 \
     ${@:2}

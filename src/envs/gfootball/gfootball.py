@@ -29,6 +29,12 @@ class FootballEnv(object):
         self.view_angle = getattr(args, "view_angle", 160)
         self.rewards = getattr(args, "rewards", "scoring")
 
+        # Video dumping config
+        self.write_full_episode_dumps = getattr(args, "write_full_episode_dumps", False)
+        self.write_video = getattr(args, "write_video", False)
+        self.dump_frequency = getattr(args, "dump_frequency", 1)
+        self.logdir = getattr(args, "logdir", "episode_dumps")
+
         # Secondary config
         scenario_config = {"11_vs_11_stochastic": {"n_agents": 11},
                            "academy_empty_goal_close": {"n_agents": 1},
@@ -60,6 +66,10 @@ class FootballEnv(object):
             number_of_left_players_agent_controls=self.n_agents,
             representation=self.representation,
             rewards=self.rewards,
+            write_full_episode_dumps=self.write_full_episode_dumps,
+            write_video=self.write_video,
+            dump_frequency=self.dump_frequency,
+            logdir=self.logdir,
             # po_view_cone_xy_opening=self.view_angle,
             # full_obs_flag=self.full_obs_flag,
         )

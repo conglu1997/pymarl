@@ -8,6 +8,11 @@ env_args:
   representation: "ma_po_list"
   full_obs: False
   view_angle: 160
+  rewards: "scoring"
+  write_full_episode_dumps: False
+  write_video: False
+  dump_frequency: 1
+  logdir: "episode_dumps"
 
 test_nepisode: 32
 test_interval: 10000

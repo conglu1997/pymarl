@@ -22,12 +22,14 @@ ex = Experiment("pymarl")
 ex.logger = logger
 ex.captured_out_filter = apply_backspaces_and_linefeeds
 
-results_path = os.path.join(dirname(dirname(abspath(__file__))), "results")
+# results_path = os.path.join(dirname(dirname(abspath(__file__))), "results")
+# Append results to data instead
+results_path = os.path.join("/data", str(os.environ.get('STORAGE_HOSTNAME')), "conlu", "results")
 
 mongo_client = None
 
 
-def setup_mongodb(results_path):
+def setup_mongodb():
     # The central mongodb for our deepmarl experiments
     # You need to set up local port forwarding to ensure this local port maps to the server
     # if conf_str == "":
@@ -65,6 +67,9 @@ def my_main(_run, _config, _log):
     np.random.seed(_config["seed"])
     th.manual_seed(_config["seed"])
     config['env_args']['seed'] = config["seed"]
+
+    # Setting run_id in config
+    _config["run_id"] = _run._id
 
     # run the framework
     run(_run, _config, _log, mongo_client)
@@ -129,7 +134,7 @@ if __name__ == '__main__':
     # now add all the config to sacred
     ex.add_config(config_dict)
 
-    mongo_client = setup_mongodb(results_path)
+    mongo_client = setup_mongodb()
 
     # Save to disk by default for sacred, even if we are using the mongodb
     logger.info("Saving to FileStorageObserver in results/sacred.")
