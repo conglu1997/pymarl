@@ -111,8 +111,8 @@ class FootballEnv(object):
         """ Returns reward, terminated, info """
         if not self.done:
             # Convert pytorch tensor to list (expand if single action)
-            # actions = actions.tolist()
-            actions = (actions.data).cpu().numpy()
+            actions = actions.tolist()
+            # actions = (actions.data).cpu().numpy()
             if len(actions) == 1:
                 actions = actions[0]
 
