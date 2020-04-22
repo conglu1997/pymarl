@@ -36,9 +36,9 @@ shared_params = {
     "save_model_interval": 250 * 1000,
     "rnn_hidden_dim": 128,
     "local_results_path": "/data/gimli/conlu/results",  # Change server name here
-    "write_full_episode_dumps": False,
+    "write_full_episode_dumps": True,
     "write_video": False,
-    "dump_frequency": 1,
+    "dump_frequency": 200,  # Every 200 episodes
     "logdir": "/data/gimli/conlu/episode_dumps",  # Change server name here
 }
 
