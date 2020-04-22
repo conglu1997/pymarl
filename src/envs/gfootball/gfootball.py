@@ -24,7 +24,7 @@ class FootballEnv(object):
         self.game_visibility = getattr(args, "game_visibility", "full")
         self.n_actions = 19  # hard-coded
         self.representation = getattr(args, "representation", "simple115")
-        self.render_game = getattr(args, "render", self.representation in ["pixels", "pixels_gray"])
+        self.render_game = getattr(args, "render", False)
         self.full_obs_flag = getattr(args, "full_obs", False)
         self.view_angle = getattr(args, "view_angle", 160)
         self.rewards = getattr(args, "rewards", "scoring")
