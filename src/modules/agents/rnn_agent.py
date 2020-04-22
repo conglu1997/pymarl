@@ -3,8 +3,8 @@ import torch as th
 import torch.nn as nn
 import torch.nn.functional as F
 
-class RNNAgent(nn.Module):
 
+class RNNAgent(nn.Module):
     def __init__(self, input_shape, args):
         super(RNNAgent, self).__init__()
         self.args = args
@@ -13,7 +13,7 @@ class RNNAgent(nn.Module):
             assert len(input_shape) == 1, "Input shape has unsupported dimensionality: {}".format(input_shape)
             input_shape = input_shape[0]
         elif isinstance(input_shape, (dict, OrderedDict)):  # assemble all 1d input regions
-            #input_shape = sum([v[0] for v in input_shape.values() if len(v) == 1])
+            # input_shape = sum([v[0] for v in input_shape.values() if len(v) == 1])
             input_shape = input_shape["1d"][0]
 
         self.fc1 = nn.Linear(input_shape, args.rnn_hidden_dim)
@@ -35,12 +35,14 @@ class RNNAgent(nn.Module):
         q = self.fc2(h)
         return q, h
 
+
 # From: https://github.com/ShangtongZhang/DeepRL/blob/master/deep_rl/network/network_bodies.py
 def layer_init(layer, w_scale=1.0):
     nn.init.orthogonal_(layer.weight.data)
     layer.weight.data.mul_(w_scale)
     nn.init.constant_(layer.bias.data, 0)
     return layer
+
 
 class RNNConvDDPGAgent(nn.Module):
     def __init__(self, input_shape, args):
