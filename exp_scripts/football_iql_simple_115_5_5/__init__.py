@@ -28,7 +28,7 @@ shared_params = {
     "t_max": 20000000,
     "epsilon_anneal_time": 2000000,
     "buffer_size": 3000,
-    "env_args.episode_limit": 1000,
+    "env_args.episode_limit": 2000,
     "env_args.representation": "simple115",
     "obs_last_action": False,
     "runner": "parallel",
