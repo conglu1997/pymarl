@@ -77,9 +77,8 @@ class FootballEnv(object):
 
         self.obs_size = self.observations[0].shape
 
-        self.state_size = np.concatenate(self.get_obs(), axis=0).astype(
-            np.float32
-        ).shape
+        # A hack for simple115
+        self.state_size = np.concatenate([self.observations[0][:97], self.observations[0][108:]]).shape
 
     def _make_ma_obs(self, obs):
         """
@@ -131,7 +130,12 @@ class FootballEnv(object):
             self.steps += 1
             if self.episode_limit != -1 and self.steps == self.episode_limit:
                 self.done = True
-            return reward if isinstance(reward, np.float32) else reward[0], done, info
+            adapted_reward = reward if isinstance(reward, np.float32) else reward[0]
+
+            # I'm going to add the step penalty here and not directly on the environment
+            adapted_reward = adapted_reward - 0.0005
+
+            return adapted_reward, done, info
         else:
             return 0, True, {}
 
@@ -148,10 +152,12 @@ class FootballEnv(object):
         return self.obs_size
 
     def get_state(self):
-        # Observation concat
-        return np.concatenate(self.get_obs(), axis=0).astype(
-            np.float32
-        )
+        # # Observation concat
+        # return np.concatenate(self.get_obs(), axis=0).astype(
+        #     np.float32
+        # )
+        # Remove active portion of the environment, this is a hack that will only work with simple 115.
+        return np.concatenate([self.observations[0][:97], self.observations[0][108:]])
 
     def get_state_size(self):
         """ Returns the shape of the state"""
