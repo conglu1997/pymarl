@@ -60,8 +60,8 @@ RUN git clone https://github.com/oxwhirl/sacred.git /install/sacred && cd /insta
 #### -------------------------------------------------------------------
 #### install pytorch
 #### -------------------------------------------------------------------
-RUN pip3 install torch
-RUN pip3 install torchvision snakeviz pytest probscale
+RUN pip3 install torch==1.4.0+cu92 torchvision==0.5.0+cu92 -f https://download.pytorch.org/whl/torch_stable.html
+RUN pip3 install snakeviz pytest probscale
 
 ## -- SMAC
 RUN pip3 install git+https://github.com/oxwhirl/smac.git
@@ -72,7 +72,8 @@ RUN pip3 install tensorflow==1.15rc2 dm-sonnet psutil
 RUN pip3 install git+https://github.com/openai/baselines.git@master
 
 ## RUN git clone https://github.com/conglu1997/football.git /football && cd /football && python3 setup.py install
-RUN pip3 install gfootball
+## RUN pip3 install gfootball
+RUN pip3 install git+https://github.com/conglu1997/football.git@new_version
 
 
 WORKDIR /pymarl
