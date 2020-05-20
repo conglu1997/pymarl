@@ -77,8 +77,8 @@ class FootballEnv(object):
 
         self.obs_size = self.observations[0].shape
 
-        self.state = None
-        self.state_size = (104,)
+        self.state = self.env.get_global_state()
+        self.state_size = self.state.shape
 
     def _make_ma_obs(self, obs):
         """
