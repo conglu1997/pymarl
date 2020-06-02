@@ -102,9 +102,14 @@ class QLearner:
         grad_norm = th.nn.utils.clip_grad_norm_(self.params, self.args.grad_norm_clip)
         self.optimiser.step()
 
-        if (episode_num - self.last_target_update_episode) / self.args.target_update_interval >= 1.0:
-            self._update_targets()
-            self.last_target_update_episode = episode_num
+        if getattr(self.args, "target_update_mode", "hard") == "hard":
+            if (episode_num - self.last_target_update_episode) / self.args.target_update_interval >= 1.0:
+                self._update_targets()
+                self.last_target_update_episode = episode_num
+        elif getattr(self.args, "target_update_mode", "hard") in ["soft", "exponential_moving_average"]:
+            self._update_targets_soft(tau = getattr(self.args, "target_update_tau", 0.001))
+        else:
+            raise Exception("unknown target update mode: {}!".format(getattr(self.args, "target_update_mode", "hard")))
 
         if t_env - self.log_stats_t >= self.args.learner_log_interval:
             self.logger.log_stat("loss", loss.item(), t_env)
@@ -120,6 +125,17 @@ class QLearner:
         if self.mixer is not None:
             self.target_mixer.load_state_dict(self.mixer.state_dict())
         self.logger.console_logger.info("Updated target network")
+
+    def _update_targets_soft(self, tau):
+        for target_param, param in zip(self.target_mac.parameters(), self.mac.parameters()):
+            target_param.data.copy_(target_param.data * (1.0 - tau) + param.data * tau)
+
+        if self.mixer is not None:
+            for target_param, param in zip(self.target_mixer.parameters(), self.mixer.parameters()):
+                target_param.data.copy_(target_param.data * (1.0 - tau) + param.data * tau)
+
+        if self.args.verbose:
+            self.logger.console_logger.info("Updated target network (soft update tau={})".format(tau))
 
     def cuda(self):
         self.mac.cuda()

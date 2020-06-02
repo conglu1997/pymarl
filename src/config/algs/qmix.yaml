@@ -26,5 +26,7 @@ skip_connections: False
 gated: False
 mixer_non_lin: elu
 hyper_initialization_nonzeros: 0
+target_update_mode: "hard"
+target_update_tau: 0.001
 
 name: "qmix"

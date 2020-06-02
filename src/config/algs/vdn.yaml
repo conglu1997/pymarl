@@ -18,5 +18,7 @@ agent_output_type: "q"
 learner: "q_learner"
 double_q: True
 mixer: "vdn"
+target_update_mode: "hard"
+target_update_tau: 0.001
 
 name: "vdn"
