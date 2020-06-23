@@ -12,12 +12,12 @@ def extend_param_dicts(param_dicts, shared_params, exp_params, repeats=1):
     return param_dicts
 
 
-server_name = "leo"
+server_name = "whip"
 
-server_list = [(server_name, [0,1,2,3,4,5,6,7], 2)]
+server_list = [(server_name, [0,1,2], 3)]
 
-label = "gfootball_simple115_5_5"
-config = "iql"
+label = "gfootball_simple115_5_6"
+config = "qmix"
 env_config = "gfootball"
 
 n_repeat = 2
@@ -39,7 +39,7 @@ shared_params = {
     "local_results_path": "/data/{0}/conlu/results".format(server_name),  # Change server name here
     "env_args.write_full_episode_dumps": True,
     "env_args.write_video": False,
-    "env_args.dump_frequency": 1,  # Every # episodes
+    "env_args.dump_frequency": 100,  # Every # episodes
 }
 
 for map_name in ["academy_run_to_score_with_keeper",

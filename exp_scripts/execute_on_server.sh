@@ -18,10 +18,10 @@ echo "EXP_DIR: $EXP_DIR"
 echo "Updating git repo"
 #mkdir -p $EXP_DIR/deepmarl
 cd $EXP_DIR/pymarl
+
 # echo "REMEMBER TO ALLOW UPDATING OF THE REPO IN execute_on_server.sh AFTER TESTING!"
-git fetch -q origin
-# Changing this to no mod version for now
-git reset --hard origin/gfootball_nomod -q
+# git fetch -q origin
+# git reset --hard origin/gfootball_nomod -q
 
 # Run the experiment $N_REPEAT times on GPU $GPU
 bash ./run.sh $GPU_ID "bash exp_scripts/repeat_exp.sh $N_REPEAT $PARAMS"

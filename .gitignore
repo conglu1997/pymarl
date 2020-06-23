@@ -1,4 +1,10 @@
-.idea/
+.idea/*
 results/
 __pycache__/
 *.pyc
+.DS_store
+3rdparty
+.ipynb_checkpoints
+sacred
+venv/
+episode_dumps/

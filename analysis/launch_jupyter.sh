@@ -1,3 +1,3 @@
 #!/bin/bash
-source ../venv/pymarl/bin/activate
-jupyter notebook
+source ../venv/bin/activate
+jupyter notebook --NotebookApp.iopub_data_rate_limit=1e10

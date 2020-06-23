@@ -12,9 +12,9 @@ def extend_param_dicts(param_dicts, shared_params, exp_params, repeats=1):
     return param_dicts
 
 
-server_name = "whip"
+server_name = "draco"
 
-server_list = [(server_name, [6, 7], 3)]
+server_list = [(server_name, [4], 2)]
 
 label = "gfootball_simple119_random_5_19"
 config = "qmix"
@@ -43,19 +43,20 @@ shared_params = {
     "epsilon_finish": 1.0,
 }
 
-for map_name in ["academy_pass_and_shoot_with_keeper",
-                 "academy_run_pass_and_shoot_with_keeper",
-                 "academy_3_vs_1_with_keeper"]:
-    for rewards in ["scoring,checkpoints", "scoring"]:
-        for agent in ['rnn']:
-            name = "{0}__{1}__{2}__{3}__random".format(config, map_name, rewards, agent)
-            extend_param_dicts(param_dicts, shared_params,
-                               {
-                                   "name": name,
-                                   "env_args.scenario": map_name,
-                                   "env_args.rewards": rewards,
-                                   "env_args.logdir": "/data/{0}/conlu/episode_dumps/{1}".format(server_name, name),
-                                   # Change server name here
-                                   "agent": agent,
-                               },
-                               repeats=1)
+# for map_name in ["academy_run_pass_and_shoot_with_keeper",
+#                  "academy_3_vs_1_with_keeper"]:
+#     for rewards in ["scoring,checkpoints", "scoring"]:
+
+for (map_name, rewards) in [('academy_run_pass_and_shoot_with_keeper', 'scoring'), ('academy_3_vs_1_with_keeper', 'scoring,checkpoints')]:
+    for agent in ['rnn']:
+        name = "{0}__{1}__{2}__{3}__random".format(config, map_name, rewards, agent)
+        extend_param_dicts(param_dicts, shared_params,
+                           {
+                               "name": name,
+                               "env_args.scenario": map_name,
+                               "env_args.rewards": rewards,
+                               "env_args.logdir": "/data/{0}/conlu/episode_dumps/{1}".format(server_name, name),
+                               # Change server name here
+                               "agent": agent,
+                           },
+                           repeats=1)

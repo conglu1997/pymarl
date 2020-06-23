@@ -12,12 +12,12 @@ def extend_param_dicts(param_dicts, shared_params, exp_params, repeats=1):
     return param_dicts
 
 
-server_name = "whip"
+server_name = "draco"
 
-server_list = [(server_name, [0, 1, 2, 3, 4, 5], 1)]
+server_list = [(server_name, [0, 1], 3)]
 
 label = "gfootball_simple119_5_19"
-config = "qmix"
+config = "iql"
 env_config = "gfootball"
 
 n_repeat = 2
