@@ -20,7 +20,7 @@ label = "gfootball_simple119_6_8"
 config = "qmix"
 env_config = "gfootball"
 
-n_repeat = 1
+n_repeat = 2
 
 param_dicts = []
 
