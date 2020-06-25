@@ -34,6 +34,10 @@ class FootballEnv(object):
         self.dump_frequency = getattr(args, "dump_frequency", 1)
         self.logdir = getattr(args, "logdir", "episode_dumps")
 
+        # Environment modifiers
+        self.move_goalkeeper = getattr(args, "move_goalkeeper", False)
+        self.difficulty_override = getattr(args, "env_difficulty", -1)
+
         # Secondary config
         scenario_config = {"11_vs_11_stochastic": {"n_agents": 11},
                            "academy_empty_goal_close": {"n_agents": 1},
@@ -180,9 +184,9 @@ class FootballEnv(object):
     def get_agg_stats(self, stats):
         return {}
 
-    def reset(self):
-        states = self.env.reset()
-
+    def reset(self, test_mode=False, t_env=-1):
+        states = self.env.reset(move_goalkeeper=self.move_goalkeeper, difficulty_override=self.difficulty_override,
+                                test_mode=test_mode, t_env=t_env)
         if len(states.shape) == 1:
             # Single observation
             # This just duplicates states

@@ -5,7 +5,7 @@ env_args:
   game_visibility: full
   episode_limit: 3000
   observation_reference_frame: fixed
-  representation: "ma_po_list"
+  representation: "ego_simple119"
   full_obs: False
   view_angle: 160
   rewards: "scoring"
@@ -13,6 +13,8 @@ env_args:
   write_video: False
   dump_frequency: 1
   logdir: "episode_dumps"
+  move_goalkeeper: False
+  env_difficulty: -1
 
 test_nepisode: 32
 test_interval: 10000

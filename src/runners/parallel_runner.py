@@ -58,12 +58,12 @@ class ParallelRunner:
         for parent_conn in self.parent_conns:
             parent_conn.send(("close", None))
 
-    def reset(self):
+    def reset(self, test_mode=False):
         self.batch = self.new_batch()
 
         # Reset the envs
         for parent_conn in self.parent_conns:
-            parent_conn.send(("reset", None))
+            parent_conn.send(("reset", {'test_mode': test_mode, 't_env': self.t_env}))
 
         pre_transition_data = {
             "state": [],
@@ -83,7 +83,7 @@ class ParallelRunner:
         self.env_steps_this_run = 0
 
     def run(self, test_mode=False):
-        self.reset()
+        self.reset(test_mode=test_mode)
 
         all_terminated = False
         episode_returns = [0 for _ in range(self.batch_size)]
@@ -239,7 +239,7 @@ def env_worker(remote, env_fn):
                 "info": env_info
             })
         elif cmd == "reset":
-            env.reset()
+            env.reset(test_mode=data['test_mode'], t_env=data['t_env'])
             remote.send({
                 "state": env.get_state(),
                 "avail_actions": env.get_avail_actions(),
