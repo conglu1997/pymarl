@@ -61,11 +61,22 @@ if __name__ == '__main__':
         "release_dribble": 18,
     }
 
-    # List of strings to be converted
-    action_sequence = ["left", "top", "shot"]
+    # Alternate method (different actions for each player)
+    action_sequence = [['left', 'top', 'bottom']] * 100
 
-    for a in action_sequence:
-        actions = [action_mapping[a]] * scenario_config[env_name]["n_agents"]
+    for act_strings in action_sequence:
+        actions = [action_mapping[a] for a in act_strings]
+        if len(actions) == 1:
+            actions = actions[0]
+        states, reward, done, info = env.step(actions)
+
+    env.reset()
+
+    # Mirror actions for each player
+    action_sequence = (["left"] * 10) + (["top"] * 10) + (["shot"] * 10)
+    action_sequence = [[a] * scenario_config[env_name]["n_agents"] for a in action_sequence]
+    for act_strings in action_sequence:
+        actions = [action_mapping[a] for a in act_strings]
         if len(actions) == 1:
             actions = actions[0]
         states, reward, done, info = env.step(actions)
