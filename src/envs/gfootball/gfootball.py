@@ -22,7 +22,6 @@ class FootballEnv(object):
         # Primary config
         self.scenario = getattr(args, "scenario", "11_vs_11_stochastic")
         self.game_visibility = getattr(args, "game_visibility", "full")
-        self.n_actions = 19  # hard-coded
         self.representation = getattr(args, "representation", "simple115")
         self.full_obs_flag = getattr(args, "full_obs", False)
         self.view_angle = getattr(args, "view_angle", 160)
@@ -63,6 +62,10 @@ class FootballEnv(object):
                                                            -1) != -1 else 1000  # TODO: Look up correct episode length!
         self.observation_reference_frame = getattr(args, "observation_reference_frame", "fixed")
 
+        self.action_set = getattr(args, "action_set", 'default')
+        # Either 19 or non sticky
+        self.n_actions = 19 if self.action_set is not 'non_sticky' else 14
+
         self.env = football_env.create_environment(
             env_name=self.scenario,
             render=False,
@@ -75,6 +78,7 @@ class FootballEnv(object):
             logdir=self.logdir,
             # po_view_cone_xy_opening=self.view_angle,
             # full_obs_flag=self.full_obs_flag,
+            action_set=self.action_set,
         )
 
         self.reset()

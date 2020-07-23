@@ -15,6 +15,7 @@ env_args:
   logdir: "episode_dumps"
   move_goalkeeper: False
   env_difficulty: -1
+  action_set: "default"
 
 test_nepisode: 32
 test_interval: 10000
